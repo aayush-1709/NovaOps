@@ -3,7 +3,19 @@
 import { Sparkles } from 'lucide-react';
 import { ThemeToggle } from './theme-toggle';
 
-export function Navbar() {
+interface NavbarProps {
+  onNavigate?: (target: 'dashboard' | 'incidents' | 'agents') => void;
+}
+
+export function Navbar({ onNavigate }: NavbarProps) {
+  const handleNavigate = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    target: 'dashboard' | 'incidents' | 'agents',
+  ) => {
+    event.preventDefault();
+    onNavigate?.(target);
+  };
+
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-lg border-b border-border/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -19,9 +31,27 @@ export function Navbar() {
           </div>
 
           <nav className="hidden md:flex items-center gap-8">
-            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition">Dashboard</a>
-            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition">Incidents</a>
-            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition">Agents</a>
+            <a
+              href="#dashboard"
+              onClick={(event) => handleNavigate(event, 'dashboard')}
+              className="text-sm text-muted-foreground hover:text-foreground transition"
+            >
+              Dashboard
+            </a>
+            <a
+              href="#incidents"
+              onClick={(event) => handleNavigate(event, 'incidents')}
+              className="text-sm text-muted-foreground hover:text-foreground transition"
+            >
+              Incidents
+            </a>
+            <a
+              href="#agents"
+              onClick={(event) => handleNavigate(event, 'agents')}
+              className="text-sm text-muted-foreground hover:text-foreground transition"
+            >
+              Agents
+            </a>
           </nav>
 
           <ThemeToggle />

@@ -7,9 +7,11 @@ interface AgentCardProps {
   description: string;
   status: 'inactive' | 'active' | 'completed';
   icon: React.ReactNode;
+  activity?: string;
+  output?: string;
 }
 
-export function AgentCard({ name, description, status, icon }: AgentCardProps) {
+export function AgentCard({ name, description, status, icon, activity, output }: AgentCardProps) {
   return (
     <div className="p-4 rounded-lg border border-border/60 bg-card hover:bg-muted/30 transition-all duration-200">
       <div className="flex items-start justify-between">
@@ -34,6 +36,12 @@ export function AgentCard({ name, description, status, icon }: AgentCardProps) {
           )}
         </div>
       </div>
+      {(activity || output) && (
+        <div className="mt-3 space-y-1">
+          {activity && <p className="text-[11px] text-primary font-medium">{activity}</p>}
+          {output && <p className="text-[11px] text-muted-foreground leading-relaxed">{output}</p>}
+        </div>
+      )}
     </div>
   );
 }

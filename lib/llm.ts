@@ -52,7 +52,10 @@ export async function callLLM(prompt: string): Promise<string> {
     throw new Error('Prompt cannot be empty.');
   }
 
-  const modelId = process.env.BEDROCK_MODEL_ID ?? DEFAULT_MODEL_ID;
+  const modelId =
+    process.env.BEDROCK_INFERENCE_PROFILE_ID ??
+    process.env.BEDROCK_MODEL_ID ??
+    DEFAULT_MODEL_ID;
   const client = getBedrockClient();
 
   const command = new InvokeModelCommand({
@@ -91,6 +94,11 @@ export async function callLLM(prompt: string): Promise<string> {
     return text;
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown LLM error';
+    if (message.includes('on-demand throughput') && message.includes('inference profile')) {
+      throw new Error(
+        'Bedrock call failed: this model requires an inference profile ID/ARN. Set BEDROCK_INFERENCE_PROFILE_ID (for example: apac.amazon.nova-lite-v1:0, us.amazon.nova-lite-v1:0, or eu.amazon.nova-lite-v1:0 based on your region).',
+      );
+    }
     throw new Error(`Bedrock call failed: ${message}`);
   }
 }

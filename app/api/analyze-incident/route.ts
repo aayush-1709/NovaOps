@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { runIncidentAnalysis } from '@/lib/agents';
-import { AnalyzeIncidentApiError, AnalyzeIncidentApiSuccess } from '@/lib/types';
+import { AnalyzeIncidentApiError, AnalyzeIncidentApiSuccess } from '@/types/incident';
 
 const ANALYSIS_TIMEOUT_MS = 60_000;
 
@@ -36,7 +36,8 @@ export async function POST(request: Request) {
 
     return NextResponse.json<AnalyzeIncidentApiSuccess>({
       success: true,
-      data: analysis,
+      data: analysis.result,
+      agents: analysis.agents,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown server error.';

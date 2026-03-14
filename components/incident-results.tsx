@@ -3,7 +3,7 @@
 import { AlertCircle, Zap, Target, Shield } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { IncidentAnalysisResult } from '@/lib/types';
+import { IncidentAnalysisResult } from '@/types/incident';
 
 interface IncidentResultsProps {
   data?: IncidentAnalysisResult;

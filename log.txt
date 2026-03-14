@@ -1,0 +1,36 @@
+2026-03-14T06:58:12Z [INFO] cloudtrail.ec2 RunInstances user=autoscaler role=arn:aws:iam::123456789012:role/NovaOps-AutoScale instanceId=i-0a4f21ec2f9ab112a subnet=subnet-0c98ab12a3345d6e7 az=ap-southeast-1a
+2026-03-14T06:58:13Z [INFO] ec2.instance i-0a4f21ec2f9ab112a state=pending privateIp=10.20.14.37 vpc=vpc-0bb92d7012af447de
+2026-03-14T06:58:24Z [INFO] ec2.statuscheck i-0a4f21ec2f9ab112a systemStatus=initializing instanceStatus=initializing
+2026-03-14T06:58:52Z [INFO] ec2.statuscheck i-0a4f21ec2f9ab112a systemStatus=ok instanceStatus=ok
+2026-03-14T06:59:01Z [INFO] app.bootstrap service=checkout-api instance=i-0a4f21ec2f9ab112a stage=starting
+2026-03-14T06:59:05Z [WARN] app.bootstrap service=checkout-api waiting_for=database endpoint=db-prod.internal.novaops.local:5432
+2026-03-14T06:59:10Z [ERROR] app.network connect failed host=db-prod.internal.novaops.local port=5432 error=connect ETIMEDOUT after 5000ms
+2026-03-14T06:59:10Z [ERROR] app.health service=checkout-api readiness=failed reason=database_unreachable
+2026-03-14T06:59:12Z [WARN] alb.targetgroup tg-checkout-prod target=10.20.14.37:8080 health=unhealthy code=503 reason=Target.ResponseCodeMismatch
+2026-03-14T06:59:26Z [WARN] app.retry database_connection attempt=2 backoff=2000ms
+2026-03-14T06:59:29Z [ERROR] app.network connect failed host=db-prod.internal.novaops.local port=5432 error=no route to host
+2026-03-14T06:59:30Z [ERROR] app.health service=checkout-api readiness=failed reason=database_unreachable
+2026-03-14T06:59:31Z [WARN] alb.targetgroup tg-checkout-prod target=10.20.14.37:8080 health=unhealthy code=503 reason=Target.ResponseCodeMismatch
+2026-03-14T06:59:34Z [INFO] vpc.flowlogs eni=eni-0f4721d981c1a2bd3 srcaddr=10.20.14.37 dstaddr=10.20.40.12 dstport=5432 action=REJECT protocol=6 packets=3 bytes=180
+2026-03-14T06:59:34Z [INFO] vpc.flowlogs eni=eni-0f4721d981c1a2bd3 srcaddr=10.20.14.37 dstaddr=10.20.40.12 dstport=443 action=ACCEPT protocol=6 packets=7 bytes=542
+2026-03-14T06:59:36Z [WARN] route53.resolver query=db-prod.internal.novaops.local response=NOERROR answers=10.20.40.12
+2026-03-14T06:59:37Z [INFO] cloudtrail.ec2 ReplaceRouteTableAssociation user=network-admin principal=arn:aws:iam::123456789012:user/netops routeTable=rtb-0f00prodprivateold associationId=rtbassoc-012c90ad9a1b4f401 subnet=subnet-0c98ab12a3345d6e7 newRouteTable=rtb-0c11stagingprivate
+2026-03-14T06:59:38Z [WARN] config.rule vpc-route-compliance status=NON_COMPLIANT details="Private app subnet is associated with staging route table"
+2026-03-14T06:59:41Z [ERROR] app.network connect failed host=db-prod.internal.novaops.local port=5432 error=no route to host
+2026-03-14T06:59:46Z [WARN] app.bootstrap service=checkout-api failed_dependency=database startup_state=degraded
+2026-03-14T06:59:48Z [ERROR] app.health service=checkout-api liveness=failed reason=dependency_failure
+2026-03-14T06:59:49Z [WARN] ecs.scheduler service=checkout-api replacement_task_started task=checkout-api/8fcb4f9c5b4a
+2026-03-14T06:59:55Z [INFO] vpc.flowlogs eni=eni-0f4721d981c1a2bd3 srcaddr=10.20.14.37 dstaddr=10.20.40.12 dstport=5432 action=REJECT protocol=6 packets=5 bytes=300
+2026-03-14T07:00:00Z [WARN] cloudwatch.alarm CheckoutApiUnhealthyTargets state=ALARM threshold=2 breached=5
+2026-03-14T07:00:03Z [ERROR] synthetic.checkout region=ap-southeast-1 endpoint=/checkout status=500 error=upstream unavailable
+2026-03-14T07:00:11Z [INFO] netops.runbook incident=INC-2041 step=validate-subnet-association subnet=subnet-0c98ab12a3345d6e7
+2026-03-14T07:00:14Z [INFO] netops.finding subnet=subnet-0c98ab12a3345d6e7 associatedRouteTable=rtb-0c11stagingprivate expected=rtb-055prodprivate
+2026-03-14T07:00:19Z [INFO] cloudtrail.ec2 ReplaceRouteTableAssociation user=network-admin principal=arn:aws:iam::123456789012:user/netops routeTable=rtb-055prodprivate associationId=rtbassoc-012c90ad9a1b4f401 subnet=subnet-0c98ab12a3345d6e7
+2026-03-14T07:00:22Z [INFO] config.rule vpc-route-compliance status=COMPLIANT
+2026-03-14T07:00:28Z [INFO] vpc.flowlogs eni=eni-0f4721d981c1a2bd3 srcaddr=10.20.14.37 dstaddr=10.20.40.12 dstport=5432 action=ACCEPT protocol=6 packets=11 bytes=924
+2026-03-14T07:00:29Z [INFO] app.network connect success host=db-prod.internal.novaops.local port=5432 latency=43ms
+2026-03-14T07:00:30Z [INFO] app.health service=checkout-api readiness=ok liveness=ok
+2026-03-14T07:00:34Z [INFO] alb.targetgroup tg-checkout-prod target=10.20.14.37:8080 health=healthy
+2026-03-14T07:00:40Z [INFO] cloudwatch.alarm CheckoutApiUnhealthyTargets state=OK
+2026-03-14T07:00:52Z [INFO] incident.timeline INC-2041 root_cause="Production app subnet was accidentally associated with staging-private route table causing REJECT to DB subnet 5432"
+2026-03-14T07:00:56Z [INFO] incident.actions INC-2041 remediation="Restored correct route table association, validated flow logs, and added IAM guardrails for route-table changes"
