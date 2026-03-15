@@ -3,6 +3,9 @@ import { runIncidentAnalysis } from '@/lib/agents';
 import { AnalyzeIncidentApiError, AnalyzeIncidentApiSuccess } from '@/types/incident';
 
 const ANALYSIS_TIMEOUT_MS = 60_000;
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const maxDuration = 60;
 
 function errorResponse(
   code: AnalyzeIncidentApiError['error']['code'],
